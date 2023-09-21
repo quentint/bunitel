@@ -8,7 +8,7 @@ export default class CharacterCell extends AbstractCharCell {
   public underline: boolean = false
   public doubleWidth: boolean = false
   public doubleHeight: boolean = false
-  public color: CellColor = CellColor.WHITE_100
+  public color: CellColor = CellColor.DEFAULT_FOREGROUND
 
   toCellData(): CellData {
     const cellData = super.toCellData()

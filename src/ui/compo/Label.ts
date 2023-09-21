@@ -8,7 +8,7 @@ export default class Label extends DisplayObject {
 
   public doubleWidth: boolean = false
   public doubleHeight: boolean = false
-  public color: CellColor = CellColor.WHITE_100
+  public color: CellColor = CellColor.DEFAULT_FOREGROUND
   public invert: boolean = false
   public blink: boolean = false
 

@@ -7,6 +7,9 @@ enum CellColor {
   MAGENTA_60 = 5,
   CYAN_80 = 6,
   WHITE_100 = 7,
+
+  DEFAULT_BACKGROUND = 0,
+  DEFAULT_FOREGROUND = 7,
 }
 
 export default CellColor

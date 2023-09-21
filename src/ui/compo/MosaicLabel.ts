@@ -5,8 +5,8 @@ import MosaicCell from '../../grid/cell/MosaicCell.ts'
 
 export default class MosaicLabel extends DisplayObject {
 
-  public foregroundColor: CellColor = CellColor.WHITE_100
-  public backgroundColor: CellColor = CellColor.BLACK_0
+  public foregroundColor: CellColor = CellColor.DEFAULT_FOREGROUND
+  public backgroundColor: CellColor = CellColor.DEFAULT_BACKGROUND
   public blink: boolean = false
 
   constructor(public text: string) {

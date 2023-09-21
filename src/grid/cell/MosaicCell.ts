@@ -6,8 +6,8 @@ import CellMode from './CellMode.ts'
 export default class MosaicCell extends AbstractCharCell {
 
   public separated: boolean = false
-  public foregroundColor: CellColor = CellColor.WHITE_100
-  public backgroundColor: CellColor = CellColor.BLACK_0
+  public foregroundColor: CellColor = CellColor.DEFAULT_FOREGROUND
+  public backgroundColor: CellColor = CellColor.DEFAULT_BACKGROUND
 
   toCellData(): CellData {
     const cellData = super.toCellData()
