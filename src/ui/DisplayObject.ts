@@ -1,10 +1,17 @@
 import AbstractCellGrid from '../grid/AbstractCellGrid.ts'
+import EventEmitter from 'events'
 
 export default class DisplayObject {
+
+  private _emitter: EventEmitter = new EventEmitter()
   public x: number = 0
   public y: number = 0
 
   protected _children: Array<DisplayObject> = []
+
+  public get emitter() {
+    return this._emitter
+  }
 
   addChild(child: DisplayObject) {
     this._children.push(child)
