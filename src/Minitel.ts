@@ -1,8 +1,8 @@
-import {ServerWebSocket} from "bun"
-import {COF, CON, ESC, FF, RS, US} from "../constants.ts"
-import WebSocketData from "./WebSocketData.ts"
-import Color from "./ui/Color.ts"
-import CharacterMode from "./ui/CharacterMode.ts";
+import {ServerWebSocket} from 'bun'
+import {COF, CON, ESC, FF, RS, US} from '../constants.ts'
+import WebSocketData from './WebSocketData.ts'
+import CellMode from './grid/cell/CellMode.ts'
+import CellColor from './grid/cell/CellColor.ts'
 
 export default class Minitel {
 
@@ -14,9 +14,9 @@ export default class Minitel {
   sendBuffer() {
     let data = this.bufferSequence.map((c) => {
       return typeof c === 'number' ? String.fromCharCode(c) : c
-    }).join('');
+    }).join('')
 
-    this.ws.send(data);
+    this.ws.send(data)
     this.bufferSequence = []
 
     return data
@@ -34,7 +34,11 @@ export default class Minitel {
     this.addToBuffer([US, 0x40 + y + 1, 0x40 + x + 1])
   }
 
-  addToBuffer(item: number|string|Array<number|string>) {
+  addCharacterToBuffer(char: string) {
+    this.addToBuffer(char)
+  }
+
+  addToBuffer(item: number | string | Array<number | string>) {
     if (Array.isArray(item)) {
       this.bufferSequence.push(...item)
     } else {
@@ -46,18 +50,27 @@ export default class Minitel {
     this.addToBuffer([b ? CON : COF])
   }
 
-  setCharacterMode(mode: CharacterMode) {
+  setCharacterMode(mode: CellMode) {
     this.addToBuffer(mode)
   }
 
-  styleColors(foregroundColor: Color, backgroundColor: Color) {
-    this.addToBuffer([ESC, 0x40 + foregroundColor])
-    this.addToBuffer([ESC, 0x50 + backgroundColor])
+  styleForeground(color: CellColor) {
+    this.addToBuffer([ESC, 0x40 + color])
   }
 
-  styleEffects(isUnderlined: boolean, isBlinking: boolean, isInverted: boolean) {
+  styleBackground(color: CellColor) {
+    this.addToBuffer([ESC, 0x50 + color])
+  }
+
+  styleUnderline(isUnderlined: boolean) {
     this.addToBuffer([ESC, isUnderlined ? 0x5a : 0x59])
+  }
+
+  styleBlink(isBlinking: boolean) {
     this.addToBuffer([ESC, isBlinking ? 0x48 : 0x49])
+  }
+
+  styleInvert(isInverted: boolean) {
     this.addToBuffer([ESC, isInverted ? 0x5d : 0x5c])
   }
 

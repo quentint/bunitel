@@ -1,5 +1,4 @@
-import DisplayMatrix from "../types/DisplayMatrix.ts"
-import Cell from "./Cell.ts"
+import AbstractCellGrid from '../grid/AbstractCellGrid.ts'
 
 export default class DisplayObject {
   public x: number = 0
@@ -30,101 +29,43 @@ export default class DisplayObject {
     }
   }
 
-  public getSelfMatrix(): DisplayMatrix {
-    return {}
+  public getSelfGrid(): AbstractCellGrid {
+    return new AbstractCellGrid()
   }
 
-  static getEmptyMatrix(width: number, height: number): DisplayMatrix {
-    const matrix: DisplayMatrix = {}
-    for (let y = 0; y < height; y++) {
-      matrix[y] = {}
-      for (let x = 0; x < width; x++) {
-        matrix[y][x] = new Cell()
-      }
-    }
+  protected addSelfGrid(toGrid: AbstractCellGrid) {
+    const selfGrid = this.getSelfGrid()
 
-    return matrix
-  }
-
-  protected addSelfMatrix(toGrid: DisplayMatrix) {
-    const selfMatrix = this.getSelfMatrix()
-
-    for (let y: number in selfMatrix) {
-      const row = selfMatrix[y]
-      for (let x: number in row) {
-        const cell = row[x]
-        if (!toGrid[y]) {
-          toGrid[y] = {}
+    for (let y: number = selfGrid.minY; y <= selfGrid.maxY; y++) {
+      for (let x: number = selfGrid.minX; x <= selfGrid.maxX; x++) {
+        const cell = selfGrid.get(x, y)
+        if (cell) {
+          toGrid.set(x, y, cell)
         }
-        toGrid[y][x] = cell
       }
     }
   }
 
-  public getMatrix(): DisplayMatrix {
-    const matrix: DisplayMatrix = {}
+  public getGrid(): AbstractCellGrid {
+    const grid: AbstractCellGrid = new AbstractCellGrid()
 
     this._children.forEach((child) => {
-      const childMatrix = child.getMatrix()
-      for (let y in childMatrix) {
-        const targetY = Number(y) + child.y
-
-        for (let x in childMatrix[y]) {
-          const cell = childMatrix[y][x]
-
-          const targetX = Number(x) + child.x
-
-          if (!matrix[targetY]) {
-            matrix[targetY] = {}
+      const childGrid = child.getGrid()
+      for (let y: number = childGrid.minY; y <= childGrid.maxY; y++) {
+        for (let x: number = childGrid.minX; x <= childGrid.maxX; x++) {
+          const cell = childGrid.get(x, y)
+          if (!cell) {
+            continue
           }
 
-          matrix[targetY][targetX] = cell
+          grid.set(x + child.x, y + child.y, cell)
         }
       }
     })
 
-    this.addSelfMatrix(matrix)
-    this.fillEmptyCells(matrix)
+    this.addSelfGrid(grid)
 
-    return matrix
+    return grid
   }
-
-  protected computeMatrixSize(matrix: DisplayMatrix): { width: number, height: number } {
-    let width = 0
-    let height = 0
-
-    for (let y in matrix) {
-      height = Math.max(height, Number(y) + 1)
-      for (let x in matrix[y]) {
-        width = Math.max(width, Number(x) + 1)
-      }
-    }
-
-    return { width, height }
-  }
-
-  protected fillEmptyCells(matrix: DisplayMatrix) {
-    const { width, height } = this.computeMatrixSize(matrix)
-
-    for (let y = 0; y < height; y++) {
-      if (!matrix[y]) {
-        matrix[y] = {}
-      }
-      for (let x = 0; x < width; x++) {
-        if (!matrix[y][x]) {
-          matrix[y][x] = new Cell()
-        }
-      }
-    }
-  }
-
-  // public getMatrixAsText(): string {
-  //   const matrix = this.getMatrix()
-  //   return matrix.map((row) => {
-  //     return row.map((cell) => {
-  //       return cell.char
-  //     }).join("")
-  //   }).join("\n")
-  // }
 
 }

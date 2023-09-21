@@ -1,13 +1,13 @@
-import Minitel from "./Minitel.ts"
-import {ServerWebSocket, sleep} from "bun"
-import WebSocketData from "./WebSocketData.ts"
-import MinitelStage from "./ui/MinitelStage.ts"
-import Label from "./ui/compo/Label.ts"
-import DisplayObject from "./ui/DisplayObject.ts"
-import DisplayMatrix from "./types/DisplayMatrix.ts"
-import Cell from "./ui/Cell.ts"
-import Color from "./ui/Color.ts"
-import CharacterMode from "./ui/CharacterMode.ts"
+import Minitel from './Minitel.ts'
+import {ServerWebSocket, sleep} from 'bun'
+import WebSocketData from './WebSocketData.ts'
+import MinitelStage from './ui/MinitelStage.ts'
+import Label from './ui/compo/Label.ts'
+import DisplayObject from './ui/DisplayObject.ts'
+import AbstractCellGrid from './grid/AbstractCellGrid.ts'
+import AbstractCell from './grid/cell/AbstractCell.ts'
+import CellColor from './grid/cell/CellColor.ts'
+import MosaicLabel from './ui/compo/MosaicLabel.ts'
 
 const specialKeys = {
   sommaire: 'F',
@@ -22,39 +22,38 @@ const specialKeys = {
 
 export default class ServerWebSocketMinitelBridge {
   private minitel: Minitel
-  private previousMatrix: DisplayMatrix
+  private previousGrid: AbstractCellGrid
   private stage: MinitelStage
 
   constructor(private ws: ServerWebSocket<WebSocketData>) {
     this.minitel = new Minitel(ws)
     this.stage = new MinitelStage()
-    this.previousMatrix = this.stage.getStageEmptyMatrix()
+    this.previousGrid = new AbstractCellGrid()
   }
 
   async onOpen() {
     const hello = new Label('Hello!')
-    // hello.style.doubleWidth = true
-    // hello.style.doubleHeight = true
+    // hello.doubleWidth = true
+    // hello.doubleHeight = true
     hello.y = 1
-    hello.style.foregroundColor = Color.BLUE
-    hello.style.invert = true
-    hello.style.blink = true
+    hello.color = CellColor.BLUE_40
+    // hello.invert = true
+    // hello.blink = true
 
     const world = new Label('World')
-    world.style.invert = true
+    world.invert = true
     world.y = 2
 
     const again = new Label('Again')
-    again.style.foregroundColor = Color.RED
-    again.style.invert = true
+    again.color = CellColor.RED_50
+    again.invert = true
     again.y = 3
 
-    const dashes = new Label('ssssssssssss')
-    dashes.style.characterMode = CharacterMode.MOSAIC
+    const dashes = new MosaicLabel('ssssssssssss')
     dashes.y = 5
 
     const container1 = new DisplayObject()
-    container1.x = -5
+    // container1.x = -5
 
     this.stage.addChild(container1)
 
@@ -66,7 +65,7 @@ export default class ServerWebSocketMinitelBridge {
 
     this.refreshStage()
 
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 2; i++) {
       await sleep(2000)
       container1.x++
       container1.y++
@@ -76,43 +75,30 @@ export default class ServerWebSocketMinitelBridge {
   }
 
   refreshStage() {
-    let matrix = this.stage.getMatrix()
+    let grid = this.stage.getGrid()
 
-    // const ghosts = this.findGhosts(this.previousMatrix)
-    //
-    // console.log(ghosts)
+    const diff = grid.diff(this.previousGrid, MinitelStage.WIDTH, MinitelStage.HEIGHT)
 
-    // this.minitel.moveToOrigin()
-    // for (let lineIndex in ghosts) {
-    //   for (let charIndex in ghosts[lineIndex]) {
-    //     const cell = ghosts[lineIndex][charIndex]
-    //     if (cell) {
-    //       console.log(cell)
-    //       this.minitel.moveTo(charIndex, lineIndex)
-    //       this.minitel.addToBuffer('a')
-    //     }
-    //   }
-    // }
-
-    const diff = this.computeMatrixDiff(this.previousMatrix, matrix)
-
-    let previousCell: Cell | null = null
+    let previousCell: AbstractCell | null = null
     let previousCellLineIndex: number | null = null
     let previousCellCharIndex: number | null = null
 
-    for (let lineIndex in diff) {
+    for (let lineIndex: number = diff.minY; lineIndex <= diff.maxY; lineIndex++) {
 
-      for (let charIndex in diff[lineIndex]) {
-        const cell = diff[lineIndex][charIndex]
-
-        const lineNumber = Number(lineIndex)
-        const charNumber = Number(charIndex)
+      for (let charIndex: number = diff.minX; charIndex <= diff.maxX; charIndex++) {
+        const cell = diff.get(charIndex, lineIndex)
 
         if (!cell) {
           continue
         }
 
-        if (cell.isGhost) {
+        const cellData = cell.toCellData()
+        const previousCellData = previousCell && previousCell.toCellData()
+
+        const lineNumber = Number(lineIndex)
+        const charNumber = Number(charIndex)
+
+        if (cellData.ghost) {
           previousCell = cell
           previousCellLineIndex = lineNumber
           previousCellCharIndex = charNumber
@@ -120,29 +106,47 @@ export default class ServerWebSocketMinitelBridge {
           continue
         }
 
-        let forcePushChanges = !previousCell || previousCellLineIndex !== lineNumber || previousCellCharIndex !== charNumber - 1;
+        let forcePushChanges = !previousCell || previousCellLineIndex !== lineNumber || previousCellCharIndex !== charNumber - 1
 
         if (forcePushChanges) {
           this.minitel.moveTo(charNumber, lineNumber)
         }
 
-        if (forcePushChanges || previousCell && cell.style.characterMode !== previousCell.style.characterMode) {
-          this.minitel.setCharacterMode(cell.style.characterMode)
+        if (forcePushChanges || previousCellData && cellData.cellMode !== previousCellData.cellMode) {
+          this.minitel.setCharacterMode(cellData.cellMode)
         }
 
-        if (forcePushChanges || previousCell && !cell.style.sizeEquals(previousCell.style)) {
-          this.minitel.setCharacterSize(cell.style.doubleWidth, cell.style.doubleHeight)
+        const setDoubleWidth = (forcePushChanges || previousCellData && cellData.doubleWidth !== previousCellData.doubleWidth) && cellData.doubleWidth !== null
+        const setDoubleHeight = (forcePushChanges || previousCellData && cellData.doubleHeight !== previousCellData.doubleHeight) && cellData.doubleHeight !== null
+        if (setDoubleWidth || setDoubleHeight) {
+          this.minitel.setCharacterSize(cellData.doubleWidth === true, cellData.doubleHeight === true)
         }
 
-        if (forcePushChanges || previousCell && !cell.style.effectsEqual(previousCell.style)) {
-          this.minitel.styleEffects(cell.style.underline, cell.style.blink, cell.style.invert)
+        if ((forcePushChanges || previousCellData && cellData.underlineOrSeparated !== previousCellData.underlineOrSeparated) && cellData.underlineOrSeparated !== null) {
+          this.minitel.styleUnderline(cellData.underlineOrSeparated)
         }
 
-        if (forcePushChanges || previousCell && !cell.style.colorsEqual(previousCell.style)) {
-          this.minitel.styleColors(cell.style.foregroundColor, cell.style.backgroundColor)
+        if ((forcePushChanges || previousCellData && cellData.blink !== previousCellData.blink) && cellData.blink !== null) {
+          this.minitel.styleBlink(cellData.blink)
         }
 
-        this.minitel.addToBuffer(cell.char)
+        if ((forcePushChanges || previousCellData && cellData.invert !== previousCellData.invert) && cellData.invert !== null) {
+          this.minitel.styleInvert(cellData.invert)
+        }
+
+        if ((forcePushChanges || previousCellData && cellData.foregroundColor !== previousCellData.foregroundColor) && cellData.foregroundColor !== null) {
+          this.minitel.styleForeground(cellData.foregroundColor)
+        }
+
+        // if (forcePushChanges || previousCellData && cellData.foregroundColor !== previousCellData.foregroundColor && cellData.foregroundColor !== null) {
+        //   this.minitel.styleForeground(cellData.foregroundColor)
+        // }
+
+        // if (forcePushChanges || previousCellData && !cellData.colorsEqual(previousCell.style)) {
+        //   this.minitel.styleColors(cellData.foregroundColor, cellData.backgroundColor)
+        // }
+
+        this.minitel.addCharacterToBuffer(cellData.char)
 
         previousCell = cell
         previousCellLineIndex = lineNumber
@@ -150,41 +154,8 @@ export default class ServerWebSocketMinitelBridge {
       }
     }
 
-    this.previousMatrix = matrix
+    this.previousGrid = grid
     this.minitel.sendBuffer()
-  }
-
-  // findGhosts(matrix: DisplayMatrix): DisplayMatrix {
-  //   const ghosts: DisplayMatrix = {}
-  //
-  //   for (let lineIndex in matrix) {
-  //     ghosts[lineIndex] = {}
-  //     for (let charIndex in matrix[lineIndex]) {
-  //       const cell = matrix[lineIndex][charIndex]
-  //       if (cell.isGhost) {
-  //         ghosts[lineIndex][charIndex] = cell
-  //       }
-  //     }
-  //   }
-  //
-  //   return ghosts
-  // }
-
-  computeMatrixDiff(before: DisplayMatrix, after: DisplayMatrix): DisplayMatrix {
-    let diff: DisplayMatrix = {}
-
-    for (let y in after) {
-      diff[y] = {}
-      for (let x in after[y]) {
-        const beforeCell = before[y][x]
-        const afterCell = after[y][x]
-        if (!beforeCell || !beforeCell.equals(afterCell)) {
-          diff[y][x] = afterCell
-        }
-      }
-    }
-
-    return diff
   }
 
   onMessage(message) {

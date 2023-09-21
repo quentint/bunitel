@@ -1,62 +1,47 @@
-import DisplayObject from "../DisplayObject.ts"
-import DisplayMatrix from "../../types/DisplayMatrix.ts"
-import Cell from "../Cell.ts"
-import CellStyle from "../CellStyle.ts"
+import DisplayObject from '../DisplayObject.ts'
+import AbstractCellGrid from '../../grid/AbstractCellGrid.ts'
+import CharacterCell from '../../grid/cell/CharacterCell.ts'
+import CellColor from '../../grid/cell/CellColor.ts'
+import GhostCell from '../../grid/cell/GhostCell.ts'
 
 export default class Label extends DisplayObject {
 
-  private _text: string
-  private _style: CellStyle = new CellStyle()
+  public doubleWidth: boolean = false
+  public doubleHeight: boolean = false
+  public color: CellColor = CellColor.WHITE_100
+  public invert: boolean = false
+  public blink: boolean = false
 
-  constructor(text: string) {
+  constructor(public text: string) {
     super()
-    this._text = text
   }
 
-  get text(): string {
-    return this._text
-  }
-
-  set text(value: string) {
-    this._text = value
-  }
-
-  get style(): CellStyle {
-    return this._style
-  }
-
-  protected getSelfMatrix(): DisplayMatrix {
-    const matrix = {0: {}}
+  protected getSelfGrid(): AbstractCellGrid {
+    const grid = new AbstractCellGrid()
 
     this.text.split('').forEach((char, index) => {
-      const cell = new Cell()
-      cell.char = char
-      cell.style = this.style/*.clone()*/
+      const cell = new CharacterCell(char)
+      cell.doubleWidth = this.doubleWidth
+      cell.doubleHeight = this.doubleHeight
+      cell.color = this.color
+      cell.invert = this.invert
+      cell.blink = this.blink
 
-      let targetX = index * (this.style.doubleWidth ? 2 : 1);
-      matrix[0][targetX] = cell
+      let targetX = index * (this.doubleWidth ? 2 : 1)
 
-      if (this.style.doubleWidth) {
-        const ghostCell = new Cell()
-        ghostCell.isGhost = true
-
-        matrix[0][targetX + 1] = ghostCell
+      if (this.doubleWidth) {
+        grid.set(targetX + 1, 0, new GhostCell())
       }
+
+      grid.set(targetX, 0, cell)
     })
 
-    if (this.style.doubleHeight) {
-      const ghostLine = {}
-
-      Object.keys(matrix[0]).forEach((key) => {
-        const ghostCell = new Cell()
-        ghostCell.isGhost = true
-
-        ghostLine[key] = ghostCell
-      })
-
-      matrix[-1] = ghostLine
+    if (this.doubleHeight) {
+      for (let x: number = 0; x < grid.width; x++) {
+        grid.set(x, -1, new GhostCell())
+      }
     }
 
-    return matrix
+    return grid
   }
 }
