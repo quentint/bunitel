@@ -9,16 +9,10 @@ export default class MinitelStage extends DisplayObject {
 
   private previousGrid: AbstractCellGrid = new AbstractCellGrid()
 
-  getGrid(): AbstractCellGrid {
-    const grid = super.getGrid()
-    grid.trim(MinitelStage.WIDTH, MinitelStage.HEIGHT)
-
-    return grid
-  }
-
   public update() {
     let grid = this.getGrid()
-    const diff = grid.diff(this.previousGrid, MinitelStage.WIDTH, MinitelStage.HEIGHT)
+    const diff = grid.diff(this.previousGrid, MinitelStage.WIDTH - 1, MinitelStage.HEIGHT - 2)
+
     const sequence = this.buildSequenceFromDiff(diff)
     this.emitter.emit('update', sequence)
     this.previousGrid = grid
