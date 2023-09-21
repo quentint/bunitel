@@ -136,8 +136,10 @@ export default class Grid<T> {
   public trim(width: number, height: number) {
     for (let y = this.minY; y <= this.maxY; y++) {
       for (let x = this.minX; x <= this.maxX; x++) {
-        if (x < 0 || x > width || y < 0 || y > height) {
-          delete this._grid[y][x]
+        if (x < 0 || x > width || y < 0 || y > height && this._grid[y] && this._grid[y][x]) {
+          try {
+            delete this._grid[y][x]
+          } catch (e) {}
         }
       }
     }
