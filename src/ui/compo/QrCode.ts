@@ -8,8 +8,8 @@ import CellColor from '../../grid/cell/CellColor.ts'
 
 export default class QrCode extends DisplayObject {
 
-  public foregroundColor: CellColor = CellColor.DEFAULT_FOREGROUND
-  public backgroundColor: CellColor = CellColor.DEFAULT_BACKGROUND
+  public foregroundColor: CellColor = CellColor.DEFAULT_BACKGROUND
+  public backgroundColor: CellColor = CellColor.DEFAULT_FOREGROUND
 
   constructor(public text: string) {
     super()
