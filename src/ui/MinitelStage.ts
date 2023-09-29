@@ -3,6 +3,7 @@ import AbstractCellGrid from '../grid/AbstractCellGrid.ts'
 import AbstractCell from '../grid/cell/AbstractCell.ts'
 import MinitelSequence from '../MinitelSequence.ts'
 import {debounce} from 'perfect-debounce'
+import StageEvent from '../event/StageEvent.ts'
 
 export default class MinitelStage extends DisplayObject {
   static WIDTH: number = 40
@@ -24,7 +25,7 @@ export default class MinitelStage extends DisplayObject {
     const diff = grid.diff(this._previousGrid, MinitelStage.WIDTH - 1, MinitelStage.HEIGHT - 2)
 
     const sequence = this.buildSequenceFromDiff(diff)
-    this.emitter.emit('update', sequence)
+    this.emitter.emit(StageEvent.UPDATE, sequence)
     this._previousGrid = grid
   }
 

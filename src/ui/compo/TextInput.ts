@@ -3,6 +3,9 @@ import AbstractCellGrid from '../../grid/AbstractCellGrid.ts'
 import CellColor from '../../grid/cell/CellColor.ts'
 import Label from './Label.ts'
 import Rect from '../../grid/Rect.ts'
+import ActionKey from '../../ActionKey.ts'
+import FocusEvent from '../../event/FocusEvent.ts'
+import KeyboardEvent from '../../event/KeyboardEvent.ts'
 
 export default class TextInput extends DisplayObject {
 
@@ -27,23 +30,23 @@ export default class TextInput extends DisplayObject {
     this.addChild(this._dots)
     this.addChild(this._label)
 
-    this.emitter.on('focus', this.onFocus.bind(this))
+    this.emitter.on(FocusEvent.FOCUS, this.onFocus.bind(this))
 
-    this.emitter.on('blur', this.onBlur.bind(this))
+    this.emitter.on(FocusEvent.BLUR, this.onBlur.bind(this))
 
-    this.emitter.on('character', (message: string) => {
+    this.emitter.on(KeyboardEvent.CHARACTER_KEY, (message: string) => {
       this.addCharacterAtCursor(message)
     })
 
-    this.emitter.on('backspace', () => {
+    this.emitter.on(ActionKey.CORRECTION, () => {
       this.removeCharacterAtCursor()
     })
 
-    this.emitter.on('leftArrow', () => {
+    this.emitter.on(ActionKey.LEFT, () => {
       this.moveCursorBy(-1)
     })
 
-    this.emitter.on('rightArrow', () => {
+    this.emitter.on(ActionKey.RIGHT, () => {
       this.moveCursorBy(1)
     })
 

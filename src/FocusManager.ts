@@ -1,14 +1,16 @@
 import MinitelStage from './ui/MinitelStage.ts'
 import DisplayObject from './ui/DisplayObject.ts'
-import KeySequence from './KeySequence.ts'
+import ActionKey from './ActionKey.ts'
+import FocusEvent from './event/FocusEvent.ts'
+import KeyboardEvent from './event/KeyboardEvent.ts'
 
 export default class FocusManager {
 
   private _activeElement: DisplayObject | null = null
 
   constructor(private readonly _stage: MinitelStage) {
-    _stage.emitter.on('suite', () => this.focusNext())
-    _stage.emitter.on('retour', () => this.focusPrevious())
+    _stage.emitter.on(ActionKey.SUITE, () => this.focusNext())
+    _stage.emitter.on(ActionKey.RETOUR, () => this.focusPrevious())
   }
 
   public set activeElement(item: DisplayObject | null) {
@@ -17,13 +19,13 @@ export default class FocusManager {
     }
 
     if (this._activeElement) {
-      this._activeElement.emitter.emit('blur')
+      this._activeElement.emitter.emit(FocusEvent.BLUR)
     }
 
     this._activeElement = item
 
     if (this._activeElement) {
-      this._activeElement.emitter.emit('focus')
+      this._activeElement.emitter.emit(FocusEvent.FOCUS)
     }
 
     this._stage.requestUpdate()
@@ -99,25 +101,7 @@ export default class FocusManager {
       return
     }
 
-    if (message === KeySequence.CORRECTION) {
-      this._activeElement.emitter.emit('backspace', message)
-      return
-    }
-
-    if (message === KeySequence.LEFT) {
-      this._activeElement.emitter.emit('leftArrow', message)
-      return
-    }
-
-    if (message === KeySequence.RIGHT) {
-      this._activeElement.emitter.emit('rightArrow', message)
-      return
-    }
-
-    // TODO: Handle more characters :)
-    if (/^[a-zA-Z0-9]$/.test(message)) {
-      this._activeElement.emitter.emit('character', message)
-    }
+    KeyboardEvent.emitMessageEvents(message, this._activeElement.emitter)
   }
 
   public focus(displayObject: DisplayObject): boolean {

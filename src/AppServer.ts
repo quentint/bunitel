@@ -3,6 +3,7 @@ import * as Bun from 'bun'
 import {Server} from 'bun'
 import MinitelApp from './MinitelApp.ts'
 import MinitelSequence from './MinitelSequence.ts'
+import StageEvent from './event/StageEvent.ts'
 
 export default class AppServer<T extends MinitelApp> {
 
@@ -34,7 +35,7 @@ export default class AppServer<T extends MinitelApp> {
           const app = _appFactory()
           app.initClientId(ws.data.id)
 
-          app.stage.emitter.on('update', (sequence: MinitelSequence) => {
+          app.stage.emitter.on(StageEvent.UPDATE, (sequence: MinitelSequence) => {
 
             const activeElement = app.focusManager.activeElement
             if (activeElement && activeElement.showCursorOnFocus) {

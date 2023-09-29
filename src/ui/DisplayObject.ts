@@ -2,6 +2,7 @@ import AbstractCellGrid from '../grid/AbstractCellGrid.ts'
 import EventEmitter from 'events'
 import MinitelStage from './MinitelStage.ts'
 import Rect from '../grid/Rect.ts'
+import StageEvent from '../event/StageEvent.ts'
 
 export default class DisplayObject {
 
@@ -43,7 +44,7 @@ export default class DisplayObject {
     }
 
     this._parent = p
-    this.emitter.emit(p ? 'added' : 'removed')
+    this.emitter.emit(p ? StageEvent.ADDED : StageEvent.REMOVED)
   }
 
   addChild(child: DisplayObject) {
