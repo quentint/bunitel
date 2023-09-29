@@ -2,20 +2,30 @@ import DisplayObject from './DisplayObject.ts'
 import AbstractCellGrid from '../grid/AbstractCellGrid.ts'
 import AbstractCell from '../grid/cell/AbstractCell.ts'
 import MinitelSequence from '../MinitelSequence.ts'
+import {debounce} from 'perfect-debounce'
 
 export default class MinitelStage extends DisplayObject {
   static WIDTH: number = 40
   static HEIGHT: number = 25
 
-  private previousGrid: AbstractCellGrid = new AbstractCellGrid()
+  private _previousGrid: AbstractCellGrid = new AbstractCellGrid()
 
-  public update() {
+  public requestUpdate: Function
+
+  constructor() {
+    super()
+    this.requestUpdate = debounce(() => {
+      this._update()
+    }, 100)
+  }
+
+  private _update() {
     let grid = this.getGrid()
-    const diff = grid.diff(this.previousGrid, MinitelStage.WIDTH - 1, MinitelStage.HEIGHT - 2)
+    const diff = grid.diff(this._previousGrid, MinitelStage.WIDTH - 1, MinitelStage.HEIGHT - 2)
 
     const sequence = this.buildSequenceFromDiff(diff)
     this.emitter.emit('update', sequence)
-    this.previousGrid = grid
+    this._previousGrid = grid
   }
 
   // TODO: Extract
@@ -26,8 +36,8 @@ export default class MinitelStage extends DisplayObject {
 
     const sequence = new MinitelSequence()
 
-    for (let lineIndex: number = diff.minY; lineIndex <= diff.maxY; lineIndex++) {
-      for (let charIndex: number = diff.minX; charIndex <= diff.maxX; charIndex++) {
+    for (let lineIndex: number = diff.innerMinY; lineIndex <= diff.innerMaxY; lineIndex++) {
+      for (let charIndex: number = diff.innerMinX; charIndex <= diff.innerMaxX; charIndex++) {
         const cell = diff.get(charIndex, lineIndex)
 
         if (!cell) {

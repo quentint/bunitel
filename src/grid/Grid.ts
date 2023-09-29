@@ -1,32 +1,33 @@
 import GridType from './GridType.ts'
 import ClearCell from './cell/ClearCell.ts'
+import Rect from './Rect.ts'
 
 export default class Grid<T> {
 
   private _grid: GridType<T> = {}
 
-  get minY(): number {
+  get innerMinY(): number {
     return Math.min(...Object.keys(this._grid).map(y => parseInt(y)))
   }
 
-  get maxY(): number {
+  get innerMaxY(): number {
     return Math.max(...Object.keys(this._grid).map(y => parseInt(y)))
   }
 
-  get minX(): number {
+  get innerMinX(): number {
     return Math.min(...Object.keys(this._grid).map(y => Math.min(...Object.keys(this._grid[parseInt(y)]).map(x => parseInt(x)))))
   }
 
-  get maxX(): number {
+  get innerMaxX(): number {
     return Math.max(...Object.keys(this._grid).map(y => Math.max(...Object.keys(this._grid[parseInt(y)]).map(x => parseInt(x)))))
   }
 
-  get width(): number {
-    return this.maxX - this.minX + 1
+  get innerWidth(): number {
+    return this.innerMaxX - this.innerMinX + 1
   }
 
-  get height(): number {
-    return this.maxY - this.minY + 1
+  get innerHeight(): number {
+    return this.innerMaxY - this.innerMinY + 1
   }
 
   get cells(): GridType<T> {
@@ -87,8 +88,8 @@ export default class Grid<T> {
 
     // Note: We ignore cells in the negative space
 
-    for (let y = 0; y < this.height; y++) {
-      for (let x = 0; x < this.width; x++) {
+    for (let y = 0; y < this.innerHeight; y++) {
+      for (let x = 0; x < this.innerWidth; x++) {
         const groupedGridTargetX = Math.floor(x / groupWidth)
         const groupedGridTargetY = Math.floor(y / groupHeight)
 
@@ -133,10 +134,10 @@ export default class Grid<T> {
     return diff
   }
 
-  public trim(width: number, height: number) {
-    for (let y = this.minY; y <= this.maxY; y++) {
-      for (let x = this.minX; x <= this.maxX; x++) {
-        if (x < 0 || x > width || y < 0 || y > height && this._grid[y] && this._grid[y][x]) {
+  public applyMask(mask: Rect) {
+    for (let y = this.innerMinY; y <= this.innerMaxY; y++) {
+      for (let x = this.innerMinX; x <= this.innerMaxX; x++) {
+        if (x < mask.x || x >= mask.width || y < mask.y || y >= mask.height && this._grid[y] && this._grid[y][x]) {
           try {
             delete this._grid[y][x]
           } catch (e) {}

@@ -12,8 +12,17 @@ export default class Label extends DisplayObject {
   public invert: boolean = false
   public blink: boolean = false
 
-  constructor(public text: string) {
+  constructor(private _text: string = '') {
     super()
+  }
+
+  public set text(text: string) {
+    this._text = text
+    this.requestStageUpdate()
+  }
+
+  public get text(): string {
+    return this._text
   }
 
   protected getSelfGrid(): AbstractCellGrid {
@@ -37,7 +46,7 @@ export default class Label extends DisplayObject {
     })
 
     if (this.doubleHeight) {
-      for (let x: number = 0; x < grid.width; x++) {
+      for (let x: number = 0; x < grid.innerWidth; x++) {
         grid.set(x, -1, new GhostCell())
       }
     }

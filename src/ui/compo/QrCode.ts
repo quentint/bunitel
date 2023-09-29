@@ -29,8 +29,8 @@ export default class QrCode extends DisplayObject {
 
     const splitGrid = qrGrid.groupCells(2, 3)
 
-    for (let y: number = 0; y < splitGrid.height; y++) {
-      for (let x: number = 0; x < splitGrid.width; x++) {
+    for (let y: number = 0; y < splitGrid.innerHeight; y++) {
+      for (let x: number = 0; x < splitGrid.innerWidth; x++) {
         const twoByThreeCell = splitGrid.get(x, y)
         if (twoByThreeCell) {
           const sequence: Array<boolean> = []

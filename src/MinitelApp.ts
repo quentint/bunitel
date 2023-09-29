@@ -1,33 +1,16 @@
 import MinitelStage from './ui/MinitelStage.ts'
-
-// const specialKeys = {
-//   up: '[A',
-//   down: '[B',
-//   // right: '[C',
-//   left: '[D',
-//
-//   sommaire: 'F',
-//   annulation: 'E',
-//   retour: 'B',
-//   repetition: 'C',
-//   guide: 'D',
-//   correction: 'G',
-//   suite: 'H',
-//   envoi: 'A',
-// }
-
-function sequenceToString(sequence: number[]): string {
-  return sequence.map((c) => String.fromCharCode(c)).join('')
-}
-
-const UP = sequenceToString([27, 91, 65])
-const DOWN = sequenceToString([27, 91, 66])
-const RIGHT = sequenceToString([27, 91, 67])
-const LEFT = sequenceToString([27, 91, 68])
+import FocusManager from './FocusManager.ts'
+import KeySequence from './KeySequence.ts'
 
 export default abstract class MinitelApp {
   private _clientId: string | null = null
-  private readonly _stage: MinitelStage = new MinitelStage()
+
+  public readonly stage: MinitelStage = new MinitelStage()
+  public readonly focusManager: FocusManager
+
+  constructor() {
+    this.focusManager = new FocusManager(this.stage)
+  }
 
   public initClientId(clientId: string) {
     if (this._clientId) {
@@ -45,86 +28,83 @@ export default abstract class MinitelApp {
     return this._clientId
   }
 
-  public get stage(): MinitelStage {
-    return this._stage
-  }
-
   public async onOpen() {
     console.log(`[${this.clientId}] onOpen: Please override me!`)
   }
 
   public async onMessage(message) {
 
-    // const sequence = message.split('').map((c) => c.charCodeAt(0))
+    // TODO: Organize events in categories
+    this.focusManager.passMessage(message)
 
-    if (message === UP) {
+    // console.log(message.split('').map((c) => c.charCodeAt(0)))
+
+    if (message === KeySequence.UP) {
       this.onUp()
       return
     }
 
-    if (message === DOWN) {
+    if (message === KeySequence.DOWN) {
       this.onDown()
       return
     }
 
-    if (message === LEFT) {
+    if (message === KeySequence.LEFT) {
       this.onLeft()
       return
     }
 
-    if (message === RIGHT) {
+    if (message === KeySequence.RIGHT) {
       this.onRight()
       return
     }
 
-    // console.log(`[${this.clientId}] onMessage(${message}): Please override me!`)
+    if (message === KeySequence.SUITE) {
+      this.onSuite()
+      return
+    }
 
-    // if (message === specialKeys.up) {
-    //   this.onUp()
-    //   return
-    // }
-    //
-    // if (message === specialKeys.down) {
-    //   this.onDown()
-    //   return
-    // }
-    //
-    // if (message === specialKeys.sommaire) {
-    //   this.onTOC()
-    //   return
-    // }
-    //
-    // if (message === specialKeys.annulation) {
-    //   this.onCancel()
-    //   return
-    // }
+    if (message === KeySequence.RETOUR) {
+      this.onRetour()
+      return
+    }
   }
 
   onUp() {
-    console.log(`[${this.clientId}] onUp`)
+    // console.log(`[${this.clientId}] onUp`)
   }
 
   onDown() {
-    console.log(`[${this.clientId}] onDown`)
+    // console.log(`[${this.clientId}] onDown`)
   }
 
   onLeft() {
-    console.log(`[${this.clientId}] onLeft`)
+    // console.log(`[${this.clientId}] onLeft`)
   }
 
   onRight() {
-    console.log(`[${this.clientId}] onRight`)
+    // console.log(`[${this.clientId}] onRight`)
   }
 
   onTOC() {
-    console.log(`[${this.clientId}] onTOC`)
+    // console.log(`[${this.clientId}] onTOC`)
   }
 
   onCancel() {
-    console.log(`[${this.clientId}] onCancel`)
+    // console.log(`[${this.clientId}] onCancel`)
+  }
+
+  onSuite() {
+    this.stage.emitter.emit('suite')
+    // console.log(`[${this.clientId}] onSuite`)
+  }
+
+  onRetour() {
+    this.stage.emitter.emit('retour')
+    // console.log(`[${this.clientId}] onRetour`)
   }
 
   public async onClose() {
-    console.log(`[${this.clientId}] onClose: Please override me!`)
+    // console.log(`[${this.clientId}] onClose: Please override me!`)
   }
 }

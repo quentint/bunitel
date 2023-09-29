@@ -9,6 +9,7 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
+    "perfect-debounce": "^1.0.0",
     "uqr": "^0.1.2"
   }
 }

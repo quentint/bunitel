@@ -35,6 +35,16 @@ export default class AppServer<T extends MinitelApp> {
           app.initClientId(ws.data.id)
 
           app.stage.emitter.on('update', (sequence: MinitelSequence) => {
+
+            const activeElement = app.focusManager.activeElement
+            if (activeElement && activeElement.showCursorOnFocus) {
+              sequence.showCursor(true)
+              const offset = activeElement.getStageCoordinates()
+              sequence.moveTo(offset.x + activeElement.innerCursorX, offset.y + activeElement.innerCursorY)
+            } else {
+              sequence.showCursor(false)
+            }
+
             let data = sequence.buffer.map((c) => {
               return typeof c === 'number' ? String.fromCharCode(c) : c
             }).join('')
