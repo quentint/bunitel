@@ -6,6 +6,7 @@ import DisplayObject from './src/ui/DisplayObject.ts'
 import MosaicCharacterUtils from './src/grid/cell/utils/MosaicCharacterUtils.ts'
 import QrCode from './src/ui/compo/QrCode.ts'
 import TextInput from './src/ui/compo/TextInput.ts'
+import CommandSequenceFactory from './src/command/CommandSequenceFactory.ts'
 
 export default class MyTestApp extends MinitelApp {
 
@@ -13,6 +14,13 @@ export default class MyTestApp extends MinitelApp {
   qr: QrCode
 
   public async onOpen() {
+
+
+    const seq = CommandSequenceFactory.fromString('AALYI\\G..........CALYI\\G..........IALYI\\G..........KALYI\\DHello!LALYI]GWorldMALYI]A113efb49-60a1-4365-b00d-3979898b7507CA')
+    console.log(seq.toReadableString())
+
+    return
+
     const hello = new Label('Hello!')
     // hello.doubleWidth = true
     // hello.doubleHeight = true

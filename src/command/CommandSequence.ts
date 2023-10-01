@@ -16,4 +16,10 @@ export default class CommandSequence {
     }).join('')
   }
 
+  public toReadableString(): string {
+    return this._buffer.map((command: Command) => {
+      return command.toReadableString()
+    }).join('\n')
+  }
+
 }
