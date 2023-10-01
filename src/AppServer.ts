@@ -2,8 +2,10 @@ import WebSocketData from './WebSocketData.ts'
 import * as Bun from 'bun'
 import {Server} from 'bun'
 import MinitelApp from './MinitelApp.ts'
-import MinitelSequence from './MinitelSequence.ts'
+import CommandSequence from './command/CommandSequence.ts'
 import StageEvent from './event/StageEvent.ts'
+import ShowCursorCommand from './command/ShowCursorCommand.ts'
+import MoveToAbsoluteCommand from './command/MoveToAbsoluteCommand.ts'
 
 export default class AppServer<T extends MinitelApp> {
 
@@ -35,20 +37,18 @@ export default class AppServer<T extends MinitelApp> {
           const app = _appFactory()
           app.initClientId(ws.data.id)
 
-          app.stage.emitter.on(StageEvent.UPDATE, (sequence: MinitelSequence) => {
+          app.stage.emitter.on(StageEvent.UPDATE, (sequence: CommandSequence) => {
 
             const activeElement = app.focusManager.activeElement
             if (activeElement && activeElement.showCursorOnFocus) {
-              sequence.showCursor(true)
+              sequence.addToBuffer(new ShowCursorCommand(true))
               const offset = activeElement.getStageCoordinates()
-              sequence.moveTo(offset.x + activeElement.innerCursorX, offset.y + activeElement.innerCursorY)
+              sequence.addToBuffer(new MoveToAbsoluteCommand(offset.x + activeElement.innerCursorX, offset.y + activeElement.innerCursorY))
             } else {
-              sequence.showCursor(false)
+              sequence.addToBuffer(new ShowCursorCommand(true))
             }
 
-            let data = sequence.buffer.map((c) => {
-              return typeof c === 'number' ? String.fromCharCode(c) : c
-            }).join('')
+            const data = sequence.bufferToString()
 
             ws.send(data)
 

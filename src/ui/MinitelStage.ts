@@ -1,9 +1,18 @@
 import DisplayObject from './DisplayObject.ts'
 import AbstractCellGrid from '../grid/AbstractCellGrid.ts'
 import AbstractCell from '../grid/cell/AbstractCell.ts'
-import MinitelSequence from '../MinitelSequence.ts'
+import CommandSequence from '../command/CommandSequence.ts'
 import {debounce} from 'perfect-debounce'
 import StageEvent from '../event/StageEvent.ts'
+import MoveToAbsoluteCommand from '../command/MoveToAbsoluteCommand.ts'
+import SetCharacterModeCommand from '../command/SetCharacterModeCommand.ts'
+import SetCharacterSizeCommand from '../command/SetCharacterSizeCommand.ts'
+import UnderlineCommand from '../command/UnderlineCommand.ts'
+import BlinkCommand from '../command/BlinkCommand.ts'
+import InvertCommand from '../command/InvertCommand.ts'
+import SetForegroundColorCommand from '../command/SetForegroundColorCommand.ts'
+import SetBackgroundColorCommand from '../command/SetBackgroundColorCommand.ts'
+import AddStringCommand from '../command/AddStringCommand.ts'
 
 export default class MinitelStage extends DisplayObject {
   static WIDTH: number = 40
@@ -35,7 +44,7 @@ export default class MinitelStage extends DisplayObject {
     let previousCellLineIndex: number | null = null
     let previousCellCharIndex: number | null = null
 
-    const sequence = new MinitelSequence()
+    const sequence = new CommandSequence()
 
     for (let lineIndex: number = diff.innerMinY; lineIndex <= diff.innerMaxY; lineIndex++) {
       for (let charIndex: number = diff.innerMinX; charIndex <= diff.innerMaxX; charIndex++) {
@@ -62,40 +71,40 @@ export default class MinitelStage extends DisplayObject {
         let forcePushChanges = !previousCell || previousCellLineIndex !== lineNumber || previousCellCharIndex !== charNumber - 1
 
         if (forcePushChanges) {
-          sequence.moveTo(charNumber, lineNumber)
+          sequence.addToBuffer(new MoveToAbsoluteCommand(charNumber, lineNumber))
         }
 
         if (forcePushChanges || previousCellData && cellData.cellMode !== previousCellData.cellMode) {
-          sequence.setCharacterMode(cellData.cellMode)
+          sequence.addToBuffer(new SetCharacterModeCommand(cellData.cellMode))
         }
 
         const setDoubleWidth = (forcePushChanges || previousCellData && cellData.doubleWidth !== previousCellData.doubleWidth) && cellData.doubleWidth !== null
         const setDoubleHeight = (forcePushChanges || previousCellData && cellData.doubleHeight !== previousCellData.doubleHeight) && cellData.doubleHeight !== null
         if (setDoubleWidth || setDoubleHeight) {
-          sequence.setCharacterSize(cellData.doubleWidth === true, cellData.doubleHeight === true)
+          sequence.addToBuffer(new SetCharacterSizeCommand(cellData.doubleWidth === true, cellData.doubleHeight === true))
         }
 
         if ((forcePushChanges || previousCellData && cellData.underlineOrSeparated !== previousCellData.underlineOrSeparated) && cellData.underlineOrSeparated !== null) {
-          sequence.styleUnderline(cellData.underlineOrSeparated)
+          sequence.addToBuffer(new UnderlineCommand(cellData.underlineOrSeparated))
         }
 
         if ((forcePushChanges || previousCellData && cellData.blink !== previousCellData.blink) && cellData.blink !== null) {
-          sequence.styleBlink(cellData.blink)
+          sequence.addToBuffer(new BlinkCommand(cellData.blink))
         }
 
         if ((forcePushChanges || previousCellData && cellData.invert !== previousCellData.invert) && cellData.invert !== null) {
-          sequence.styleInvert(cellData.invert)
+          sequence.addToBuffer(new InvertCommand(cellData.invert))
         }
 
         if ((forcePushChanges || previousCellData && cellData.foregroundColor !== previousCellData.foregroundColor) && cellData.foregroundColor !== null) {
-          sequence.styleForeground(cellData.foregroundColor)
+          sequence.addToBuffer(new SetForegroundColorCommand(cellData.foregroundColor))
         }
 
         if ((forcePushChanges || previousCellData && cellData.backgroundColor !== previousCellData.backgroundColor) && cellData.backgroundColor !== null) {
-          sequence.styleBackground(cellData.backgroundColor)
+          sequence.addToBuffer(new SetBackgroundColorCommand(cellData.backgroundColor))
         }
 
-        sequence.addCharacterToBuffer(cellData.char)
+        sequence.addToBuffer(new AddStringCommand(cellData.char))
 
         previousCell = cell
         previousCellLineIndex = lineNumber
