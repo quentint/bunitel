@@ -14,14 +14,7 @@ export default class MyTestApp extends MinitelApp {
   qr: QrCode
 
   public async onOpen() {
-
-
-    const seq = CommandSequenceFactory.fromString('AALYI\\G..........CALYI\\G..........IALYI\\G..........KALYI\\DHello!LALYI]GWorldMALYI]A113efb49-60a1-4365-b00d-3979898b7507CA')
-    console.log(seq.toReadableString())
-
-    return
-
-    const hello = new Label('Hello!')
+    const hello = new Label('Hello')
     // hello.doubleWidth = true
     // hello.doubleHeight = true
     // hello.y = 1
