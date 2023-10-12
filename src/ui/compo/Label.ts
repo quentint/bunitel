@@ -11,6 +11,7 @@ export default class Label extends DisplayObject {
   public color: CellColor = CellColor.DEFAULT_FOREGROUND
   public invert: boolean = false
   public blink: boolean = false
+  public underline: boolean = false
 
   constructor(private _text: string = '') {
     super()
@@ -28,6 +29,16 @@ export default class Label extends DisplayObject {
   protected getSelfGrid(): AbstractCellGrid {
     const grid = new AbstractCellGrid()
 
+    if (this.underline) {
+      if (this.getStageCoordinates().x < 1) {
+        console.warn('Label with underline should not be placed on the left of the screen, style will be ignored')
+      }
+
+      const underlineCell = new CharacterCell(' ')
+      underlineCell.underline = true
+      grid.set(-1, 0, underlineCell)
+    }
+
     this.text.split('').forEach((char, index) => {
       const cell = new CharacterCell(char)
       cell.doubleWidth = this.doubleWidth
@@ -35,6 +46,7 @@ export default class Label extends DisplayObject {
       cell.color = this.color
       cell.invert = this.invert
       cell.blink = this.blink
+      cell.underline = this.underline
 
       let targetX = index * (this.doubleWidth ? 2 : 1)
 
