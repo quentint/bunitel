@@ -1,11 +1,9 @@
 {
   "name": "bunitel",
+  "version": "1.0.0",
+  "description": "Bun + Minitel",
   "module": "index.ts",
   "type": "module",
-  "scripts": {
-    "dev": "bun run --hot index.ts --live-reload",
-    "prod": "bun run index.ts"
-  },
   "devDependencies": {
     "bun-types": "latest"
   },
@@ -20,5 +18,11 @@
     "minimist": "^1.2.8",
     "perfect-debounce": "^1.0.0",
     "uqr": "^0.1.2"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/quentint/bunitel.git"
+  },
+  "author": "Quentin Thiaucourt <quentin.t@gmail.com>",
+  "license": "ISC"
 }
