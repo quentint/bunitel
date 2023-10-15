@@ -1,10 +1,9 @@
-import WebSocketData from './WebSocketData.ts'
 import * as Bun from 'bun'
-import MinitelApp from './MinitelApp.ts'
-import CommandSequence from './command/CommandSequence.ts'
-import StageEvent from './event/StageEvent.ts'
-import ShowCursorCommand from './command/ShowCursorCommand.ts'
-import MoveToAbsoluteCommand from './command/MoveToAbsoluteCommand.ts'
+import {MinitelApp} from './MinitelApp.ts'
+import {CommandSequence} from './command'
+import {StageEvent} from './event'
+import {ShowCursorCommand} from './command'
+import {MoveToAbsoluteCommand} from './command'
 import Elysia from 'elysia'
 import {staticPlugin} from '@elysiajs/static'
 import {html} from '@elysiajs/html'
@@ -14,19 +13,19 @@ declare global {
   let liveReloadWebSocket: any
 }
 
-export default class AppServer<T extends MinitelApp> {
+export class AppServer<T extends MinitelApp> {
 
   private readonly _bridges: Map<string, T>
 
   constructor(_appFactory: () => T, options: { liveReload?: boolean } = {}) {
     this._bridges = new Map<string, T>()
 
-    let liveReloadApp: Elysia<WebSocketData>
+    let liveReloadApp: Elysia
 
     if (options.liveReload) {
       console.log('Live reload enabled')
       // noinspection TypeScriptValidateTypes
-      liveReloadApp = new Elysia<WebSocketData>()
+      liveReloadApp = new Elysia()
       .ws('/live-reload', {
         open: async (ws) => {
           globalThis.liveReloadWebSocket = ws
@@ -45,29 +44,28 @@ export default class AppServer<T extends MinitelApp> {
     ]
 
     // noinspection TypeScriptValidateTypes
-    const elysia = new Elysia<WebSocketData>().use(html())
+    const elysia = new Elysia().use(html())
 
     // Serve "browser" static assets
     browserPaths.forEach(browserPath => {
       elysia.use(staticPlugin({
-        assets: `node_modules/@quentin.t/miedit/${browserPath}`,
+        assets: `${import.meta.dir}/../node_modules/@quentin.t/miedit/${browserPath}`,
         prefix: `/${browserPath}`,
-        alwaysStatic: true,
       }))
     })
 
     elysia.get('/', async () => {
-      let template = await Bun.file('templates/browser.template.html').text()
+      let template = await Bun.file(`${import.meta.dir}/../templates/browser.template.html`).text()
 
-      template = template.replaceAll('{hostname}', elysia.server?.hostname.toString())
-      .replaceAll('{port}', elysia.server?.port.toString())
+      template = template.replaceAll('{hostname}', elysia.server?.hostname.toString() ?? 'localhost')
+      .replaceAll('{port}', elysia.server?.port.toString() ?? '3000')
 
       if (liveReloadApp) {
-        const liveReloadTemplate = await Bun.file('templates/live-reload.template.html').text()
+        const liveReloadTemplate = await Bun.file(`${import.meta.dir}/../templates/live-reload.template.html`).text()
 
         template = template.replaceAll('</body>', `${liveReloadTemplate}</body>`)
-        template = template.replaceAll('{liveReloadHostname}', liveReloadApp.server?.hostname.toString())
-        .replaceAll('{liveReloadPort}', liveReloadApp.server?.port.toString())
+        template = template.replaceAll('{liveReloadHostname}', liveReloadApp.server?.hostname.toString() ?? 'localhost')
+        .replaceAll('{liveReloadPort}', liveReloadApp.server?.port.toString() ?? '3001')
       }
 
       return template
@@ -105,7 +103,7 @@ export default class AppServer<T extends MinitelApp> {
       message: (ws, message) => {
         const app = this._bridges.get(ws.data.id)
         if (app) {
-          app.onMessage(message)
+          app.onMessage(message as string)
         } else {
           console.error(`No bridge found for ${ws.data.id}`)
         }
