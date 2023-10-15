@@ -86,7 +86,7 @@ export class AppServer<T extends MinitelApp> {
             const offset = activeElement.getStageCoordinates()
             sequence.addToBuffer(new MoveToAbsoluteCommand(offset.x + activeElement.innerCursorX, offset.y + activeElement.innerCursorY))
           } else {
-            sequence.addToBuffer(new ShowCursorCommand(true))
+            sequence.addToBuffer(new ShowCursorCommand(false))
           }
 
           const data = sequence.bufferToString()
