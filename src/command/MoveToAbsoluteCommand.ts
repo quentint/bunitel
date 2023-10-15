@@ -1,6 +1,6 @@
-import Command from './Command.ts'
+import {Command} from './Command.ts'
 
-export default class MoveToAbsoluteCommand implements Command {
+export class MoveToAbsoluteCommand implements Command {
 
   constructor(public x: number, public y: number) {
   }

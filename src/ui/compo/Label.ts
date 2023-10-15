@@ -1,10 +1,10 @@
-import DisplayObject from '../DisplayObject.ts'
-import AbstractCellGrid from '../../grid/AbstractCellGrid.ts'
-import CharacterCell from '../../grid/cell/CharacterCell.ts'
-import CellColor from '../../grid/cell/CellColor.ts'
-import GhostCell from '../../grid/cell/GhostCell.ts'
+import {DisplayObject} from '../DisplayObject.ts'
+import {AbstractCellGrid} from '../../grid'
+import {CharacterCell} from '../../grid/cell'
+import {CellColor} from '../../grid/cell'
+import {GhostCell} from '../../grid/cell'
 
-export default class Label extends DisplayObject {
+export class Label extends DisplayObject {
 
   public doubleWidth: boolean = false
   public doubleHeight: boolean = false
@@ -26,7 +26,7 @@ export default class Label extends DisplayObject {
     return this._text
   }
 
-  protected getSelfGrid(): AbstractCellGrid {
+  public getSelfGrid(): AbstractCellGrid {
     const grid = new AbstractCellGrid()
 
     if (this.underline) {

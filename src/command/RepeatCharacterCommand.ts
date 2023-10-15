@@ -1,6 +1,6 @@
-import Command from './Command.ts'
+import {Command} from './Command.ts'
 
-export default class RepeatCharacterCommand implements Command {
+export class RepeatCharacterCommand implements Command {
 
   constructor(public char: string, public count: number) {
   }

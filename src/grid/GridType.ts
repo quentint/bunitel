@@ -1,7 +1,5 @@
-type GridType<T> = {
+export type GridType<T> = {
   [key: number]: {
     [key: number]: T
   }
 }
-
-export default GridType

@@ -1,4 +1,4 @@
-enum ClearMode {
+export enum ClearMode {
   SCREEN = 'SCREEN',
   FROM_CURSOR_TO_EOL = 'FROM_CURSOR_TO_EOL',
   ALL_AFTER_CURSOR = 'ALL_AFTER_CURSOR',
@@ -8,5 +8,3 @@ enum ClearMode {
   STATUS_LINE = 'STATUS_LINE',
   SCREEN_AND_STATUS_LINE = 'SCREEN_AND_STATUS_LINE',
 }
-
-export default ClearMode

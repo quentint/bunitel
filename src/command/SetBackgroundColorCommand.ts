@@ -1,7 +1,7 @@
-import Command from './Command.ts'
-import CellColor from '../grid/cell/CellColor.ts'
+import {Command} from './Command.ts'
+import {CellColor} from '../grid/cell'
 
-export default class SetBackgroundColorCommand implements Command {
+export class SetBackgroundColorCommand implements Command {
 
   constructor(public color: CellColor) {
   }
@@ -15,7 +15,7 @@ export default class SetBackgroundColorCommand implements Command {
     const nextCharCode = charCodes[1]
 
     return nextCharCode >= 80 && nextCharCode <= 87 ?
-        new SetBackgroundColorCommand(CellColor[(nextCharCode - 80) as keyof typeof CellColor])
+        new SetBackgroundColorCommand(CellColor[(nextCharCode - 80) as unknown as keyof typeof CellColor])
         : null
   }
 

@@ -1,8 +1,8 @@
 {
   "name": "bunitel",
   "version": "1.0.0",
+  "main": "src/index.ts",
   "description": "Bun + Minitel",
-  "module": "index.ts",
   "type": "module",
   "devDependencies": {
     "bun-types": "latest"
@@ -24,5 +24,15 @@
     "url": "git+https://github.com/quentint/bunitel.git"
   },
   "author": "Quentin Thiaucourt <quentin.t@gmail.com>",
-  "license": "ISC"
+  "license": "ISC",
+  "exports": {
+    ".": "./src/index.ts",
+    "./command": "./src/command/index.ts",
+    "./event": "./src/event/index.ts",
+    "./grid": "./src/grid/index.ts",
+    "./grid/cell": "./src/grid/cell/index.ts",
+    "./grid/cell/utils": "./src/grid/cell/utils/index.ts",
+    "./ui": "./src/ui/index.ts",
+    "./ui/compo": "./src/ui/compo/index.ts"
+  }
 }

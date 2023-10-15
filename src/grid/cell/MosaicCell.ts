@@ -1,9 +1,9 @@
-import AbstractCharCell from './AbstractCharCell.ts'
-import CellColor from './CellColor.ts'
-import CellData from './CellData.ts'
-import CellMode from './CellMode.ts'
+import {AbstractCharCell} from './AbstractCharCell.ts'
+import {CellColor} from './CellColor.ts'
+import {CellData} from './CellData.ts'
+import {CellMode} from './CellMode.ts'
 
-export default class MosaicCell extends AbstractCharCell {
+export class MosaicCell extends AbstractCharCell {
 
   public separated: boolean = false
   public foregroundColor: CellColor = CellColor.DEFAULT_FOREGROUND

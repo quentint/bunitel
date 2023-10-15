@@ -1,10 +1,10 @@
-import MinitelStage from './ui/MinitelStage.ts'
-import DisplayObject from './ui/DisplayObject.ts'
-import ActionKey from './ActionKey.ts'
-import FocusEvent from './event/FocusEvent.ts'
-import KeyboardEvent from './event/KeyboardEvent.ts'
+import {MinitelStage} from './ui'
+import {DisplayObject} from './ui'
+import {ActionKey} from './ActionKey.ts'
+import {FocusEvent} from './event'
+import {KeyboardEvent} from './event'
 
-export default class FocusManager {
+export class FocusManager {
 
   private _activeElement: DisplayObject | null = null
 

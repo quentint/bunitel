@@ -1,8 +1,8 @@
-import GridType from './GridType.ts'
-import ClearCell from './cell/ClearCell.ts'
-import Rect from './Rect.ts'
+import {GridType} from './GridType.ts'
+import {ClearCell} from './cell'
+import {Rect} from './Rect.ts'
 
-export default class Grid<T> {
+export class Grid<T> {
 
   private _grid: GridType<T> = {}
 

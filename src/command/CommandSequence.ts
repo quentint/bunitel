@@ -1,6 +1,6 @@
-import Command from './Command.ts'
+import {Command} from './Command.ts'
 
-export default class CommandSequence {
+export class CommandSequence {
 
   private _buffer: Array<Command> = []
 

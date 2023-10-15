@@ -1,6 +1,6 @@
-import Command from './Command.ts'
+import {Command} from './Command.ts'
 
-export default class UnderlineCommand implements Command {
+export class UnderlineCommand implements Command {
 
   constructor(public active: boolean) {
   }

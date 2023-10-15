@@ -1,4 +1,4 @@
-export default class MosaicCharacterUtils {
+export class MosaicCharacterUtils {
 
   public static fromBooleanArray(sequence: boolean[]): string {
     return MosaicCharacterUtils.fromBitString(sequence.map((b) => b ? '1' : '0').join(''))

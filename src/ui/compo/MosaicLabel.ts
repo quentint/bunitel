@@ -1,9 +1,9 @@
-import DisplayObject from '../DisplayObject.ts'
-import AbstractCellGrid from '../../grid/AbstractCellGrid.ts'
-import CellColor from '../../grid/cell/CellColor.ts'
-import MosaicCell from '../../grid/cell/MosaicCell.ts'
+import {DisplayObject} from '../DisplayObject.ts'
+import {AbstractCellGrid} from '../../grid'
+import {CellColor} from '../../grid/cell'
+import {MosaicCell} from '../../grid/cell'
 
-export default class MosaicLabel extends DisplayObject {
+export class MosaicLabel extends DisplayObject {
 
   public foregroundColor: CellColor = CellColor.DEFAULT_FOREGROUND
   public backgroundColor: CellColor = CellColor.DEFAULT_BACKGROUND
@@ -13,7 +13,7 @@ export default class MosaicLabel extends DisplayObject {
     super()
   }
 
-  protected getSelfGrid(): AbstractCellGrid {
+  public getSelfGrid(): AbstractCellGrid {
     const grid = new AbstractCellGrid()
 
     this.text.split('').forEach((char, index) => {

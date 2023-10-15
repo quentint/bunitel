@@ -1,6 +1,6 @@
-import CellData from './CellData.ts'
+import {CellData} from './CellData.ts'
 
-export default abstract class AbstractCell {
+export abstract class AbstractCell {
 
   public toCellData(): CellData {
     return new CellData()

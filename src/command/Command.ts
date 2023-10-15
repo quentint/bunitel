@@ -1,4 +1,4 @@
-export default interface Command {
+export interface Command {
   toNumberArray(): Array<number>
 
   toReadableString(): string

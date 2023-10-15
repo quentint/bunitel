@@ -1,6 +1,6 @@
-import Command from './Command.ts'
+import {Command} from './Command.ts'
 
-export default class InvertCommand implements Command {
+export class InvertCommand implements Command {
 
   constructor(public active: boolean) {
   }

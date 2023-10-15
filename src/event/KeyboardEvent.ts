@@ -1,7 +1,7 @@
 import EventEmitter from 'events'
-import ActionKey from '../ActionKey.ts'
+import {ActionKey} from 'bunitel'
 
-export default class KeyboardEvent {
+export class KeyboardEvent {
   public static readonly ACTION_KEY = 'actionKey'
   public static readonly CHARACTER_KEY = 'characterKey'
 

@@ -1,6 +1,6 @@
-import Command from './Command.ts'
+import {Command} from './Command.ts'
 
-export default class BlinkCommand implements Command {
+export class BlinkCommand implements Command {
 
   constructor(public active: boolean) {
   }

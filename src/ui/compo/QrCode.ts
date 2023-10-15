@@ -1,12 +1,12 @@
 import {encode} from "uqr"
-import DisplayObject from '../DisplayObject.ts'
-import AbstractCellGrid from '../../grid/AbstractCellGrid.ts'
-import Grid from '../../grid/Grid.ts'
-import MosaicCell from '../../grid/cell/MosaicCell.ts'
-import MosaicCharacterUtils from '../../grid/cell/utils/MosaicCharacterUtils.ts'
-import CellColor from '../../grid/cell/CellColor.ts'
+import {DisplayObject} from '../DisplayObject.ts'
+import {AbstractCellGrid} from '../../grid'
+import {Grid} from '../../grid'
+import {MosaicCell} from '../../grid/cell'
+import {MosaicCharacterUtils} from '../../grid/cell/utils'
+import {CellColor} from '../../grid/cell'
 
-export default class QrCode extends DisplayObject {
+export class QrCode extends DisplayObject {
 
   public foregroundColor: CellColor = CellColor.DEFAULT_BACKGROUND
   public backgroundColor: CellColor = CellColor.DEFAULT_FOREGROUND
@@ -15,7 +15,7 @@ export default class QrCode extends DisplayObject {
     super()
   }
 
-  protected getSelfGrid(): AbstractCellGrid {
+  public getSelfGrid(): AbstractCellGrid {
     const {data: qrMatrix} = encode(this.text)
     const qrGrid = new Grid<boolean>()
 

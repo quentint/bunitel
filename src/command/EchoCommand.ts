@@ -1,6 +1,6 @@
-import Command from './Command.ts'
+import {Command} from './Command.ts'
 
-export default class EchoCommand implements Command {
+export class EchoCommand implements Command {
 
   constructor(public active: boolean) {
   }

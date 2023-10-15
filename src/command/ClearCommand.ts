@@ -1,7 +1,7 @@
-import Command from './Command.ts'
-import ClearMode from './ClearMode.ts'
+import {Command} from './Command.ts'
+import {ClearMode} from './ClearMode.ts'
 
-export default class ClearCommand implements Command {
+export class ClearCommand implements Command {
 
   constructor(public mode: ClearMode) {
   }

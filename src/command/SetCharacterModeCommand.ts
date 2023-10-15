@@ -1,7 +1,7 @@
-import Command from './Command.ts'
-import CellMode from '../grid/cell/CellMode.ts'
+import {Command} from './Command.ts'
+import {CellMode} from '../grid/cell'
 
-export default class SetCharacterModeCommand implements Command {
+export class SetCharacterModeCommand implements Command {
 
   constructor(public mode: CellMode) {
   }

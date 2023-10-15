@@ -1,8 +1,8 @@
-import AbstractCharCell from './AbstractCharCell.ts'
-import CellColor from './CellColor.ts'
-import CellData from './CellData.ts'
+import {AbstractCharCell} from './AbstractCharCell.ts'
+import {CellColor} from './CellColor.ts'
+import {CellData} from './CellData.ts'
 
-export default class CharacterCell extends AbstractCharCell {
+export class CharacterCell extends AbstractCharCell {
 
   public invert: boolean = false
   public underline: boolean = false

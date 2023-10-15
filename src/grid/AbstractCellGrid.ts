@@ -1,6 +1,6 @@
-import Grid from './Grid.ts'
-import AbstractCell from './cell/AbstractCell.ts'
+import {Grid} from './Grid.ts'
+import {AbstractCell} from './cell'
 
-export default class AbstractCellGrid extends Grid<AbstractCell> {
+export class AbstractCellGrid extends Grid<AbstractCell> {
 
 }

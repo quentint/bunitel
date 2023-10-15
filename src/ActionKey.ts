@@ -2,7 +2,7 @@ function sequenceToString(sequence: number[]): string {
   return sequence.map((c) => String.fromCharCode(c)).join('')
 }
 
-export default class ActionKey {
+export class ActionKey {
   // Actions
   static readonly ENVOI = sequenceToString([19, 65])
   static readonly RETOUR = sequenceToString([19, 66])

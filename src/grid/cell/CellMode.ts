@@ -1,8 +1,6 @@
 import {SI, SO} from "../../../constants.ts"
 
-enum CellMode {
+export enum CellMode {
   STANDARD = SI,
   MOSAIC = SO,
 }
-
-export default CellMode

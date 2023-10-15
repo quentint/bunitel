@@ -1,4 +1,4 @@
-enum CellColor {
+export enum CellColor {
   BLACK_0 = 0,
   RED_50 = 1,
   GREEN_70 = 2,
@@ -11,5 +11,3 @@ enum CellColor {
   DEFAULT_BACKGROUND = 0,
   DEFAULT_FOREGROUND = 7,
 }
-
-export default CellColor

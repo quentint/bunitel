@@ -1,8 +1,8 @@
-import CharacterCell from './CharacterCell.ts'
-import CellData from './CellData.ts'
-import CellColor from './CellColor.ts'
+import {CharacterCell} from './CharacterCell.ts'
+import {CellData} from './CellData.ts'
+import {CellColor} from './CellColor.ts'
 
-export default class ClearCell extends CharacterCell {
+export class ClearCell extends CharacterCell {
   constructor() {
     super(' ')
   }

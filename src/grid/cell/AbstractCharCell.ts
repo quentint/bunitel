@@ -1,7 +1,7 @@
-import AbstractCell from './AbstractCell.ts'
-import CellData from './CellData.ts'
+import {AbstractCell} from './AbstractCell.ts'
+import {CellData} from './CellData.ts'
 
-export default abstract class AbstractCharCell extends AbstractCell {
+export abstract class AbstractCharCell extends AbstractCell {
 
   public blink: boolean = false
 

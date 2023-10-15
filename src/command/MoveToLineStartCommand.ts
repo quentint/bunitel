@@ -1,6 +1,6 @@
-import Command from './Command.ts'
+import {Command} from './Command.ts'
 
-export default class MoveToLineStartCommand implements Command {
+export class MoveToLineStartCommand implements Command {
 
   static consume(charCodes: Array<number>): MoveToLineStartCommand | null {
     return charCodes[0] === 13 ? new MoveToLineStartCommand() : null

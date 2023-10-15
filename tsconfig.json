@@ -17,6 +17,17 @@
     "allowJs": true,
     "types": [
       "bun-types" // add Bun global
+    ],
+    "rootDir": ".",
+    "paths": {
+      "bunitel": ["."],
+    },
+    "include": [
+      "*.ts",
+      "*/**.ts"
+    ],
+    "exclude": [
+      "node_modules",
     ]
   }
 }

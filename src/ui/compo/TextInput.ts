@@ -1,13 +1,13 @@
-import DisplayObject from '../DisplayObject.ts'
-import AbstractCellGrid from '../../grid/AbstractCellGrid.ts'
-import CellColor from '../../grid/cell/CellColor.ts'
-import Label from './Label.ts'
-import Rect from '../../grid/Rect.ts'
-import ActionKey from '../../ActionKey.ts'
-import FocusEvent from '../../event/FocusEvent.ts'
-import KeyboardEvent from '../../event/KeyboardEvent.ts'
+import {DisplayObject} from '../DisplayObject.ts'
+import {AbstractCellGrid} from '../../grid'
+import {CellColor} from '../../grid/cell'
+import {Label} from './Label.ts'
+import {Rect} from '../../grid'
+import {FocusEvent} from '../../event'
+import {KeyboardEvent} from '../../event'
+import {ActionKey} from 'bunitel'
 
-export default class TextInput extends DisplayObject {
+export class TextInput extends DisplayObject {
 
   private _width: number = 10
   private _label: Label = new Label()

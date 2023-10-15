@@ -1,26 +1,30 @@
-import DisplayObject from './DisplayObject.ts'
-import AbstractCellGrid from '../grid/AbstractCellGrid.ts'
-import AbstractCell from '../grid/cell/AbstractCell.ts'
-import CommandSequence from '../command/CommandSequence.ts'
+import {DisplayObject} from './DisplayObject.ts'
+import {AbstractCellGrid} from '../grid'
+import {
+  AddStringCommand,
+  BlinkCommand,
+  CommandSequence,
+  InvertCommand,
+  MoveToAbsoluteCommand,
+  SetBackgroundColorCommand,
+  SetCharacterModeCommand,
+  SetCharacterSizeCommand,
+  SetForegroundColorCommand,
+  UnderlineCommand,
+} from '../command'
 import {debounce} from 'perfect-debounce'
-import StageEvent from '../event/StageEvent.ts'
-import MoveToAbsoluteCommand from '../command/MoveToAbsoluteCommand.ts'
-import SetCharacterModeCommand from '../command/SetCharacterModeCommand.ts'
-import SetCharacterSizeCommand from '../command/SetCharacterSizeCommand.ts'
-import UnderlineCommand from '../command/UnderlineCommand.ts'
-import BlinkCommand from '../command/BlinkCommand.ts'
-import InvertCommand from '../command/InvertCommand.ts'
-import SetForegroundColorCommand from '../command/SetForegroundColorCommand.ts'
-import SetBackgroundColorCommand from '../command/SetBackgroundColorCommand.ts'
-import AddStringCommand from '../command/AddStringCommand.ts'
+import {StageEvent} from '../event'
+import {AbstractCell} from '../grid/cell'
 
-export default class MinitelStage extends DisplayObject {
+export class MinitelStage extends DisplayObject {
   static WIDTH: number = 40
   static HEIGHT: number = 25
 
-  private _previousGrid: AbstractCellGrid = new AbstractCellGrid()
-
   public requestUpdate: Function
+
+  protected _isStage: boolean = true
+
+  private _previousGrid: AbstractCellGrid = new AbstractCellGrid()
 
   constructor() {
     super()

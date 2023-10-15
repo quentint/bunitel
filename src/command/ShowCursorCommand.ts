@@ -1,6 +1,6 @@
-import Command from './Command.ts'
+import {Command} from './Command.ts'
 
-export default class ShowCursorCommand implements Command {
+export class ShowCursorCommand implements Command {
 
   constructor(public show: boolean) {
   }

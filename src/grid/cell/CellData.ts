@@ -1,7 +1,7 @@
-import CellColor from './CellColor.ts'
-import CellMode from './CellMode.ts'
+import {CellColor} from './CellColor.ts'
+import {CellMode} from './CellMode.ts'
 
-export default class CellData {
+export class CellData {
   public ghost: boolean = false
   public cellMode: CellMode = CellMode.STANDARD
   public char: string = ' '

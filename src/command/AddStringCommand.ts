@@ -1,6 +1,6 @@
-import Command from './Command.ts'
+import {Command} from './Command.ts'
 
-export default class AddStringCommand implements Command {
+export class AddStringCommand implements Command {
 
   constructor(public s: string) {
   }

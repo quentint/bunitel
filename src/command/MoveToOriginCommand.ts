@@ -1,6 +1,6 @@
-import Command from './Command.ts'
+import {Command} from './Command.ts'
 
-export default class MoveToOriginCommand implements Command {
+export class MoveToOriginCommand implements Command {
 
   static consume(charCodes: Array<number>): MoveToOriginCommand | null {
     return charCodes[0] === 30 ? new MoveToOriginCommand() : null

@@ -1,6 +1,6 @@
-import Command from './Command.ts'
+import {Command} from './Command.ts'
 
-export default class MoveToRelativeCommand implements Command {
+export class MoveToRelativeCommand implements Command {
 
   constructor(public x: number, public y: number) {
   }

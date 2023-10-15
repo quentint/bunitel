@@ -1,6 +1,6 @@
-import Command from './Command.ts'
+import {Command} from './Command.ts'
 
-export default class SetCharacterSizeCommand implements Command {
+export class SetCharacterSizeCommand implements Command {
   constructor(public doubleWidth: boolean, public doubleHeight: boolean) {
   }
 

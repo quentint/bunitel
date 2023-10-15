@@ -1,6 +1,6 @@
-import Command from './Command.ts'
+import {Command} from './Command.ts'
 
-export default class BeepCommand implements Command {
+export class BeepCommand implements Command {
 
   static consume(charCodes: Array<number>): BeepCommand | null {
     return charCodes[0] === 7 ? new BeepCommand() : null
