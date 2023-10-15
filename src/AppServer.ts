@@ -7,10 +7,12 @@ import {MoveToAbsoluteCommand} from './command'
 import Elysia from 'elysia'
 import {staticPlugin} from '@elysiajs/static'
 import {html} from '@elysiajs/html'
+import {ServerWebSocket} from 'bun'
 
 // globalThis is not replaced on HMR
 declare global {
-  let liveReloadWebSocket: any
+  // noinspection ES6ConvertVarToLetConst
+  var liveReloadWebSocket: any
 }
 
 export class AppServer<T extends MinitelApp> {
