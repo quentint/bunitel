@@ -1,14 +1,15 @@
-import MinitelStage from './ui/MinitelStage.ts'
-import FocusManager from './FocusManager.ts'
-import KeyboardEvent from './event/KeyboardEvent.ts'
+import {MinitelStage} from './ui'
+import {FocusManager} from './FocusManager.ts'
+import {KeyboardEvent} from './event'
 
-export default abstract class MinitelApp {
+export abstract class MinitelApp {
   private _clientId: string | null = null
 
-  public readonly stage: MinitelStage = new MinitelStage()
+  public readonly stage: MinitelStage
   public readonly focusManager: FocusManager
 
-  constructor() {
+  protected constructor() {
+    this.stage = new MinitelStage()
     this.focusManager = new FocusManager(this.stage)
   }
 
@@ -32,7 +33,7 @@ export default abstract class MinitelApp {
     console.log(`[${this.clientId}] onOpen: Please override me!`)
   }
 
-  public async onMessage(message) {
+  public async onMessage(message: string) {
 
     // console.log(message.split('').map((c) => c.charCodeAt(0)))
 
