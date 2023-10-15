@@ -22,7 +22,7 @@ export class ActionKey {
 
   static isKnownSequence(sequence: string): string|null {
     for (let key of Object.keys(ActionKey)) {
-      if (ActionKey[key] === sequence) {
+      if (ActionKey[key as keyof ActionKey] === sequence) {
         return key
       }
     }
