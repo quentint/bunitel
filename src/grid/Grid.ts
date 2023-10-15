@@ -107,7 +107,7 @@ export class Grid<T> {
     return groupedGrid
   }
 
-  diff(before: Grid<T>, maxX: number, maxY: number, minX: number = 0, minY: number = 0): Grid<T> {
+  diff(before: Grid<T>, maxX: number, maxY: number, clearCellFactory: () => T, cellEqualityChecker: (afterCell: T, beforeCell: T) => boolean, minX: number = 0, minY: number = 0): Grid<T> {
     let diff: Grid<T> = new Grid<T>()
 
     for (let y: number = minY; y <= maxY; y++) {
@@ -116,11 +116,11 @@ export class Grid<T> {
         const afterCell = this.get(x, y)
 
         if (beforeCell && !afterCell) {
-          diff.set(x, y, new ClearCell())
+          diff.set(x, y, clearCellFactory())
           continue
         }
 
-        if (beforeCell && afterCell && afterCell.toCellData().equals(beforeCell.toCellData())) {
+        if (beforeCell && afterCell && cellEqualityChecker(afterCell, beforeCell)) {
           continue
         }
 

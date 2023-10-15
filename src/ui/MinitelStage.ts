@@ -14,7 +14,7 @@ import {
 } from '../command'
 import {debounce} from 'perfect-debounce'
 import {StageEvent} from '../event'
-import {AbstractCell} from '../grid/cell'
+import {AbstractCell, ClearCell} from '../grid/cell'
 
 export class MinitelStage extends DisplayObject {
   static WIDTH: number = 40
@@ -35,7 +35,13 @@ export class MinitelStage extends DisplayObject {
 
   private _update() {
     let grid = this.getGrid()
-    const diff = grid.diff(this._previousGrid, MinitelStage.WIDTH - 1, MinitelStage.HEIGHT - 2)
+    const diff = grid.diff(
+        this._previousGrid,
+        MinitelStage.WIDTH - 1,
+        MinitelStage.HEIGHT - 2,
+        () => new ClearCell(),
+        (afterCell: AbstractCell, beforeCell: AbstractCell) => afterCell.toCellData().equals(beforeCell.toCellData()),
+    )
 
     const sequence = this.buildSequenceFromDiff(diff)
     this.emitter.emit(StageEvent.UPDATE, sequence)
