@@ -15,6 +15,8 @@ declare global {
   var liveReloadWebSocket: any
 }
 
+const inNodeModules = import.meta.url.includes('node_modules')
+
 export class AppServer<T extends MinitelApp> {
 
   private readonly _bridges: Map<string, T>
@@ -51,7 +53,7 @@ export class AppServer<T extends MinitelApp> {
     // Serve "browser" static assets
     browserPaths.forEach(browserPath => {
       elysia.use(staticPlugin({
-        assets: `${import.meta.dir}/../node_modules/@quentin.t/miedit/${browserPath}`,
+        assets: inNodeModules ? `${import.meta.dir}/../../@quentin.t/miedit/${browserPath}` : `${import.meta.dir}/../node_modules/@quentin.t/miedit/${browserPath}`,
         prefix: `/${browserPath}`,
       }))
     })
