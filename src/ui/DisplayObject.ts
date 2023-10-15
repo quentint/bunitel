@@ -1,11 +1,12 @@
-import AbstractCellGrid from '../grid/AbstractCellGrid.ts'
+import {AbstractCellGrid} from '../grid'
 import EventEmitter from 'events'
-import MinitelStage from './MinitelStage.ts'
-import Rect from '../grid/Rect.ts'
-import StageEvent from '../event/StageEvent.ts'
+import {MinitelStage} from './MinitelStage.ts'
+import {Rect} from '../grid'
+import {StageEvent} from '../event'
 
-export default class DisplayObject {
+export class DisplayObject {
 
+  protected _isStage: boolean = false
   private _emitter: EventEmitter = new EventEmitter()
 
   protected _parent: DisplayObject | null = null
@@ -21,17 +22,21 @@ export default class DisplayObject {
 
   protected _children: Array<DisplayObject> = []
 
+  public get isStage(): boolean {
+    return this._isStage
+  }
+
   public get emitter() {
     return this._emitter
   }
 
   public get stage(): MinitelStage | null {
-    let o = this
-    while (o._parent) {
-      o = o._parent
+    let o: DisplayObject = this
+    while (o.parent) {
+      o = o.parent
     }
 
-    return o instanceof MinitelStage ? o : null
+    return o.isStage ? o as MinitelStage : null
   }
 
   public get parent(): DisplayObject | null {
@@ -127,7 +132,7 @@ export default class DisplayObject {
     let x = this.x
     let y = this.y
 
-    let o = this
+    let o: DisplayObject = this
     while (o._parent) {
       o = o._parent
       x += o.x
@@ -152,11 +157,13 @@ export default class DisplayObject {
   }
 
   protected requestStageUpdate(): boolean {
-    if (!this.stage) {
+    const stage = this.stage
+
+    if (!stage) {
       return false
     }
 
-    this.stage.requestUpdate()
+    stage.requestUpdate()
     return true
   }
 
