@@ -7,7 +7,6 @@ import {MoveToAbsoluteCommand} from './command'
 import Elysia from 'elysia'
 import {staticPlugin} from '@elysiajs/static'
 import {html} from '@elysiajs/html'
-import {ServerWebSocket} from 'bun'
 
 // globalThis is not replaced on HMR
 declare global {
@@ -61,8 +60,16 @@ export class AppServer<T extends MinitelApp> {
     elysia.get('/', async () => {
       let template = await Bun.file(`${import.meta.dir}/../templates/browser.template.html`).text()
 
-      template = template.replaceAll('{hostname}', elysia.server?.hostname.toString() ?? 'localhost')
-      .replaceAll('{port}', elysia.server?.port.toString() ?? '3000')
+      const hostname = elysia.server?.hostname.toString() ?? 'localhost'
+      const port = elysia.server?.port.toString() ?? '3000'
+
+      let socketUrl = `ws://${hostname}:${port}/ws`
+
+      if (process.env.SOCKET_DOMAIN) {
+        socketUrl = `${process.env.SOCKET_DOMAIN}/ws`
+      }
+
+      template = template.replaceAll('{socket}', socketUrl)
 
       if (liveReloadApp) {
         const liveReloadTemplate = await Bun.file(`${import.meta.dir}/../templates/live-reload.template.html`).text()
